@@ -2,6 +2,8 @@
 #include "Prerequisites.h"
 #include "Ticket.h"
 
+//Este código tiene cosas mal en el .cpp y no sé cómo arreglarlas! Ayuda!
+
 /**
  * @class GestorDeTickets
  * @brief Administra un conjunto de tickets.

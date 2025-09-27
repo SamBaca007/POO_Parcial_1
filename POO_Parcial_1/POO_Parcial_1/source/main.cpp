@@ -1,7 +1,7 @@
 #include "Prerequisites.h"
 #include "GestorDeTickets.h"
 
-//Este código tiene cosas mal y no sé cómo arreglarlas! Ayuda!
+//Este código tiene cosas mal en el .cpp y no sé cómo arreglarlas! Ayuda!
 
 int 
 main() {

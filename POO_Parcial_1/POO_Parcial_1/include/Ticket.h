@@ -1,6 +1,8 @@
 #pragma once
 #include "Prerequisites.h"
 
+//Este código tiene cosas mal en el .cpp y no sé cómo arreglarlas! Ayuda!
+
 // Clase que representa un ticket de tarea.
 class Ticket {
 public:
