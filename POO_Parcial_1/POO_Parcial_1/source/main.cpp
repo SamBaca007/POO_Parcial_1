@@ -206,7 +206,7 @@ main() {
       break;
     }
     case 5:
-      std::cout << "\nSaliendo del sistema. ¡Adios!\n";
+      std::cout << "\nSaliendo del sistema. Adios!\n";
       break;
     default:
       std::cout << "\nOpción invalida. Por favor, seleccione un numero del 1 al 5.\n";
