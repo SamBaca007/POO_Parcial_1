@@ -22,9 +22,11 @@
     <ClCompile Include="source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\EstadoTicket.h" />
     <ClInclude Include="include\GestorDeTickets.h" />
     <ClInclude Include="include\Prerequisites.h" />
     <ClInclude Include="include\Ticket.h" />
+    <ClInclude Include="include\TicketsDerivados.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
