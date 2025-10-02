@@ -1,25 +1,35 @@
 #pragma once
 #include "Prerequisites.h"
 
-// El formato de las variables (y por extensión, los nombres de los valores de la enumeración)
-// usa notación Camel Case.
-enum class EstadoTicket
+/**
+ * @enum EstadoTicket
+ * @brief Define los estados posibles en los que puede encontrarse un ticket.
+ * * Utiliza un 'enum class' para garantizar un ámbito de nombres limpio y fuertemente tipado.
+ */
+enum 
+class 
+EstadoTicket
 {
-  pendiente,      // Ticket recién creado o esperando ser asignado
-  enProgreso,     // Ticket actualmente en desarrollo o trabajando en él
-  completado      // Ticket finalizado
+  /// Ticket recién creado, esperando ser asignado o iniciado.
+  pendiente,
+  /// El trabajo en el ticket está actualmente en curso.
+  enProgreso,
+  /// El trabajo en el ticket ha finalizado y está listo para ser cerrado.
+  completado
 };
 
 // ---
 // Metodos y Funciones
-// Se usan funciones inline para permitir la implementación en el header,
-// cumpliendo con la restricción de un solo archivo .cpp principal.
-// El formato de la función es Camel Case, comenzando en minúscula.
+// ---
 
 /**
- * @brief Convierte un string a su valor de EstadoTicket correspondiente.
+ * @brief Convierte una cadena de texto a su valor de EstadoTicket correspondiente.
+ * * La conversión no distingue entre mayúsculas y minúsculas y maneja variaciones menores (e.g., "enprogreso" o "en progreso").
+ * @param estadoString La cadena de texto que representa el estado (ej. "Pendiente").
+ * @return El valor de la enumeración EstadoTicket. Devuelve EstadoTicket::pendiente por defecto si el estado no es reconocido.
  */
-inline EstadoTicket convertirStringAEstado(const std::string& estadoString) {
+inline 
+EstadoTicket convertirStringAEstado(const std::string& estadoString) {
   // Para simplificar la comparación, convertimos el string a minúsculas
   std::string temp = estadoString;
   // Usa std::transform para convertir a minúsculas (requiere <algorithm>)
@@ -27,13 +37,16 @@ inline EstadoTicket convertirStringAEstado(const std::string& estadoString) {
     [](unsigned char c) { return std::tolower(c); });
 
   // Comparación para devolver el enum correspondiente
-  if (temp == "pendiente") {
+  if 
+  (temp == "pendiente") {
     return EstadoTicket::pendiente;
   }
-  else if (temp == "enprogreso" || temp == "en progreso") {
+  else if 
+  (temp == "enprogreso" || temp == "en progreso") {
     return EstadoTicket::enProgreso;
   }
-  else if (temp == "completado") {
+  else if 
+  (temp == "completado") {
     return EstadoTicket::completado;
   }
 
@@ -42,9 +55,12 @@ inline EstadoTicket convertirStringAEstado(const std::string& estadoString) {
 }
 
 /**
- * @brief Convierte un valor de EstadoTicket a su representación en string.
+ * @brief Convierte un valor de EstadoTicket a su representación legible en string.
+ * @param estado El valor de la enumeración EstadoTicket.
+ * @return La cadena de texto correspondiente al estado (ej. "En Progreso").
  */
-inline std::string convertirEstadoAString(EstadoTicket estado) {
+inline 
+std::string convertirEstadoAString(EstadoTicket estado) {
   switch (estado) {
   case EstadoTicket::pendiente:
     return "Pendiente";
@@ -58,9 +74,16 @@ inline std::string convertirEstadoAString(EstadoTicket estado) {
 }
 
 /**
- * @brief Valida si una transición de estado es permitida.
+ * @brief Valida si una transición de estado específica es permitida.
+ * * Es la implementación de la regla de negocio fundamental del proyecto.
+ * * Reglas: Pendiente -> EnProgreso; EnProgreso -> Completado o Pendiente; Completado -> Ninguna otra.
+ * @param estadoActual El estado actual del ticket antes del cambio.
+ * @param estadoSiguiente El estado al que se intenta cambiar.
+ * @return true si la transición es válida, false en caso contrario.
  */
-inline bool esTransicionValida(EstadoTicket estadoActual, EstadoTicket estadoSiguiente) {
+inline 
+bool 
+esTransicionValida(EstadoTicket estadoActual, EstadoTicket estadoSiguiente) {
   // Si el estado no cambia, es válido
   if (estadoActual == estadoSiguiente) {
     return true;
@@ -68,16 +91,16 @@ inline bool esTransicionValida(EstadoTicket estadoActual, EstadoTicket estadoSig
 
   switch (estadoActual) {
   case EstadoTicket::pendiente:
-    // Regla: Pendiente -> En Progreso
+    // Regla: Pendiente solo puede pasar a En Progreso
     return estadoSiguiente == EstadoTicket::enProgreso;
 
   case EstadoTicket::enProgreso:
-    // Regla: En Progreso -> Completado O En Progreso -> Pendiente
+    // Regla: En Progreso puede pasar a Completado o volver a Pendiente
     return estadoSiguiente == EstadoTicket::completado ||
       estadoSiguiente == EstadoTicket::pendiente;
 
   case EstadoTicket::completado:
-    // Regla: Una vez Completado, no hay más transiciones
+    // Regla: Una vez Completado, no hay más transiciones externas permitidas
     return false;
 
   default:

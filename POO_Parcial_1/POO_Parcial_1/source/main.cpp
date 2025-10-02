@@ -1,14 +1,22 @@
+/**
+ * @file main.cpp
+ * @brief Contiene la implementación del menú principal de consola y la lógica de interacción del usuario.
+ * * Demuestra el uso de las clases GestorDeTickets, Ticket y las clases derivadas,
+ * aplicando los principios de la Programación Orientada a Objetos (POO).
+ */
 #include "Prerequisites.h"
 #include "GestorDeTickets.h" // Incluye a Ticket.h y EstadoTicket.h
 #include "TicketsDerivados.h" // Incluye los tickets de Bug y Feature
 
-// Funciones Auxiliares para el Menú
-// Se usan para evitar repetir código y mantener el main limpio.
+ // --- Funciones Auxiliares para el Menú ---
 
-/**
- * @brief Obtiene una entrada de texto no vacía del usuario.
- */
-std::string obtenerEntradaString(const std::string& mensaje) {
+ /**
+  * @brief Obtiene una entrada de texto no vacía del usuario.
+  * @param mensaje El mensaje a mostrar al usuario (prompt).
+  * @return La cadena de texto ingresada por el usuario.
+  */
+std::string 
+obtenerEntradaString(const std::string& mensaje) {
   std::string entrada;
   // Utilizamos 'do-while' para garantizar que la entrada no esté vacía
   do {
@@ -22,32 +30,33 @@ std::string obtenerEntradaString(const std::string& mensaje) {
 }
 
 /**
- * @brief Obtiene una entrada de número entero positiva del usuario.
+ * @brief Obtiene una entrada de número entero positivo del usuario.
+ * @param mensaje El mensaje a mostrar al usuario (prompt).
+ * @return El número entero positivo ingresado por el usuario.
  */
-int 
+int
 obtenerEntradaInt(const std::string& mensaje) {
   int numero;
   std::cout << mensaje;
 
   while (!(std::cin >> numero) || numero <= 0) {
-    std::cout << "Entrada inválida. Debe ser un número entero positivo: ";
+    std::cout << "Entrada invalida. Debe ser un número entero positivo: ";
     std::cin.clear(); // Limpia los flags de error
     std::cin.ignore(10000, '\n'); // Descarta la entrada restante
   }
 
-  // LIMPIEZA CLAVE: Consumir el salto de línea pendiente 
-  // después de la lectura del entero, antes de que cualquier otra
-  // función como std::cin.get() (pausa) intente leerlo.
+  /// Limpieza clave: Consumir el salto de línea pendiente después de la lectura del entero.
   std::cin.ignore(10000, '\n');
 
   return numero;
 }
 
 /**
- * @brief Muestra las opciones de estado y pide al usuario que elija uno.
- * @return El EstadoTicket seleccionado.
+ * @brief Muestra las opciones de estado de ticket y pide al usuario que elija una.
+ * @return El valor del enum EstadoTicket seleccionado.
  */
-EstadoTicket seleccionarEstado() {
+EstadoTicket 
+seleccionarEstado() {
   int opcion;
   std::cout << "\n--- ESTADOS DISPONIBLES ---\n";
   std::cout << "1. Pendiente\n";
@@ -68,16 +77,17 @@ EstadoTicket seleccionarEstado() {
 }
 
 /**
- * @brief Función para manejar la creación de un nuevo ticket, 
- * incluyendo los tipos derivados.
+ * @brief Maneja la creación de un nuevo ticket, permitiendo seleccionar entre la clase base
+ * * y las clases derivadas (Bug y Feature), demostrando la Herencia.
+ * @param gestor Referencia al GestorDeTickets donde se agregará el nuevo ticket.
  */
-void 
+void
 crearNuevoTicket(GestorDeTickets& gestor) {
   std::cout << "\n--- CREAR NUEVO TICKET ---\n";
   std::string title = obtenerEntradaString("Titulo del ticket: ");
   std::string description = obtenerEntradaString("Descripcion: ");
 
-  // Obtener la fecha actual como string (usando la función auxiliar de GestorDeTickets.h)
+  // Obtener la fecha actual (función auxiliar en GestorDeTickets.h)
   time_t now = time(0);
   tm* ltm = localtime(&now);
   char buffer[80];
@@ -90,20 +100,20 @@ crearNuevoTicket(GestorDeTickets& gestor) {
   std::cout << "3. Feature (Nueva Funcionalidad - Usa Herencia)\n";
   int tipoTicket = obtenerEntradaInt("Seleccione el tipo de ticket (1-3): ");
 
-  // Se crea un ticket temporal para agregarlo al gestor
+  // Se crea un ticket temporal base
   Ticket ticketBase(0, title, description, EstadoTicket::pendiente, date);
 
-  // Aquí demostramos la creación de objetos derivados (Herencia)
-  if 
-  (tipoTicket == 2) {
-    std::string 
-    severidad = obtenerEntradaString("Severidad del Bug (e.g., Alta, Media): ");
+  /// Demostración de la creación de objetos derivados (Herencia)
+  if
+    (tipoTicket == 2) {
+    std::string
+      severidad = obtenerEntradaString("Severidad del Bug (e.g., Alta, Media): ");
     TicketDeBug bug(0, title, description, EstadoTicket::pendiente, date, severidad);
     gestor.agregarTicket(bug);
     std::cout << "Tipo de ticket: Bug. Severidad: " << severidad << ".\n";
   }
-  else if 
-  (tipoTicket == 3) {
+  else if
+    (tipoTicket == 3) {
     std::string modulo = obtenerEntradaString("Módulo afectado (e.g., Login, Pagos): ");
     TicketDeFeature feature(0, title, description, EstadoTicket::pendiente, date, modulo);
     gestor.agregarTicket(feature);
@@ -117,13 +127,15 @@ crearNuevoTicket(GestorDeTickets& gestor) {
 }
 
 /**
- * @brief Función para manejar la edición de un ticket existente.
+ * @brief Maneja la lógica para editar un ticket, solicitando los nuevos datos.
+ * * Invoca a GestorDeTickets::editarTicket, donde se aplica la validación de estado.
+ * @param gestor Referencia al GestorDeTickets.
  */
-void 
+void
 editarTicketExistente(GestorDeTickets& gestor) {
   gestor.listarTickets();
-  if 
-  (gestor.estaVacio()) return;
+  if
+    (gestor.estaVacio()) return;
 
   std::cout << "\n--- EDITAR TICKET ---\n";
   int id = obtenerEntradaInt("Ingrese el ID del ticket a editar: ");
@@ -141,30 +153,33 @@ editarTicketExistente(GestorDeTickets& gestor) {
   strftime(buffer, 80, "%Y-%m-%d", ltm);
   std::string nuevaFecha = std::string(buffer);
 
-  // Llamamos a la función de GestorDeTickets. Esta función llamará internamente 
-  // al setter de Ticket, que contiene la validación esTransicionValida().
+  // La función editarTicket llamará internamente al setter de Ticket, que contiene la validación.
   gestor.editarTicket(id, nuevoTitulo, nuevaDescripcion, nuevoEstado, nuevaFecha);
 }
 
 /**
- * @brief Limpia la pantalla de la consola.
+ * @brief Limpia la pantalla de la consola usando el comando "cls" (Windows).
  */
-void 
+void
 limpiarPantalla() {
   system("cls");
 }
 
 /**
- * @brief Pausa la ejecución hasta que el usuario presione Enter.
+ * @brief Pausa la ejecución del programa hasta que el usuario presione la tecla Enter.
  */
-void 
+void
 pausarConsola() {
   std::cout << "\nPresione Enter para continuar...";
-  // Usamos std::cin.get() para esperar la entrada.
   std::cin.get();
 }
 
-int 
+/**
+ * @brief Función principal del programa.
+ * * Inicializa el GestorDeTickets y presenta el menú de interacción en bucle.
+ * @return 0 si el programa finaliza con éxito.
+ */
+int
 main() {
   GestorDeTickets gestor;
   int opcion = 0;
@@ -185,8 +200,8 @@ main() {
 
     opcion = obtenerEntradaInt("Seleccione una opcion: ");
 
-    switch 
-    (opcion) {
+    switch
+      (opcion) {
     case 1:
       crearNuevoTicket(gestor);
       pausarConsola();
